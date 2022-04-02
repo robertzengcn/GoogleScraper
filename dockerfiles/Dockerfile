@@ -14,9 +14,9 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.22.0/geckod
 RUN tar -zxvf geckodriver-v0.22.0-linux64.tar.gz
 
 
-WORKDIR /app/GoogleScraper
-RUN pip install git+git://github.com/NikolaiT/GoogleScraper/
-RUN sed -i "/chromedriver_path =/c\chromedriver_path = '/app/chromeDriver/chromedriver'" /usr/local/lib/python3.6/site-packages/GoogleScraper/scrape_config.py 
-RUN sed -i "/geckodriver_path =/c\geckodriver_path = '/app/geckoDriver/geckodriver'" /usr/local/lib/python3.6/site-packages/GoogleScraper/scrape_config.py 
+# WORKDIR /app/GoogleScraper
+# RUN pip install git+git://github.com/NikolaiT/GoogleScraper/
+# RUN sed -i "/chromedriver_path =/c\chromedriver_path = '/app/chromeDriver/chromedriver'" /usr/local/lib/python3.6/site-packages/GoogleScraper/scrape_config.py 
+# RUN sed -i "/geckodriver_path =/c\geckodriver_path = '/app/geckoDriver/geckodriver'" /usr/local/lib/python3.6/site-packages/GoogleScraper/scrape_config.py 
 
 ENTRYPOINT bash
