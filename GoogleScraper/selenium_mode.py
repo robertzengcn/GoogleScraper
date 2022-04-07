@@ -593,7 +593,8 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         if self.search_type == 'normal':
 
             if self.search_engine_name == 'google':
-                selector = '#navcnt td.cur'
+                # selector = '#navcnt td.cur'
+                selector='//*[@id="xjs"]/table/tbody/tr/td[@class="YyVfkd"]'
             elif self.search_engine_name == 'yandex':
                 selector = '.pager__item_current_yes'
             elif self.search_engine_name == 'bing':
@@ -661,7 +662,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
 
         self.webdriver.get(starting_url)
 
-
+    
     def search(self):
         """Search with webdriver.
 

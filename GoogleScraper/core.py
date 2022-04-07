@@ -401,6 +401,7 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
         if method in ('selenium', 'http'):
 
             # Show the progress of the scraping
+            # Constructor for a FIFO queue
             q = queue.Queue()
             progress_thread = ShowProgressQueue(config, q, len(scrape_jobs))
             progress_thread.start()
