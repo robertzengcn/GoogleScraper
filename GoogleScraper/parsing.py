@@ -461,17 +461,20 @@ class GoogleParser(Parser):
                             self.no_results = False
 
         clean_regexes = {
-            'normal': r'/url\?q=(?P<url>.*?)&sa=U&ei=',
+            # 'normal': r'/url\?q=(?P<url>.*?)&sa=U&ei=',
+            'normal':r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
             'image': r'imgres\?imgurl=(?P<url>.*?)&'
         }
 
         for key, i in self.iter_serp_items():
+            logger.info("try to find link")
+            logger.info(self.search_results[key][i]['link'])
             result = re.search(
                 clean_regexes[self.searchtype],
                 self.search_results[key][i]['link']
             )
             if result:
-                self.search_results[key][i]['link'] = unquote(result.group('url'))
+                self.search_results[key][i]['link'] = unquote(result.group())
 
 
 class YandexParser(Parser):

@@ -292,6 +292,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         """
         tempdir = tempfile.gettempdir()
         location = os.path.join(tempdir, '{}_{}_debug_screenshot.png'.format(self.search_engine_name, self.browser_type))
+        logger.info(location)
         self.webdriver.get_screenshot_as_file(location)
 
     def _set_xvfb_display(self):
@@ -591,10 +592,11 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         """
 
         if self.search_type == 'normal':
-
+            #https://selenium-python.readthedocs.io/locating-elements.html#:~:text=Locating%20Elements%20by%20CSS%20Selectors%C2%B6
             if self.search_engine_name == 'google':
                 # selector = '#navcnt td.cur'
-                selector='//*[@id="xjs"]/table/tbody/tr/td[@class="YyVfkd"]'
+                # selector='//*[@id="xjs"]/table/tbody/tr/td[@class="YyVfkd"]'
+                  selector='#xjs td.YyVfkd'
             elif self.search_engine_name == 'yandex':
                 selector = '.pager__item_current_yes'
             elif self.search_engine_name == 'bing':
@@ -614,6 +616,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
             else:
 
                 try:
+                    logger.info('the page number is {}'.format(self.page_number))
                     WebDriverWait(self.webdriver, 5).\
             until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, selector), str(self.page_number)))
                 except TimeoutException as e:
@@ -685,7 +688,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
                 time.sleep(.25)
 
                 self.search_param_fields = self._get_search_param_fields()
-
+                logger.info(self.search_param_fields)
                 if self.search_param_fields:
                     wait_res = self._wait_until_search_param_fields_appears()
                     if wait_res is False:
