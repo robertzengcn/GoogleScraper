@@ -461,7 +461,7 @@ class GoogleParser(Parser):
             'normal': r'/url\?q=(?P<url>.*?)&sa=U&ei=',
             'image': r'imgres\?imgurl=(?P<url>.*?)&'
         }
-
+        logger.info("search link at here")
         for key, i in self.iter_serp_items():
             result = re.search(
                 clean_regexes[self.searchtype],
@@ -1053,7 +1053,7 @@ def parse_serp(html='', query='', search_engine='google'):
     Returns:
         The parsed SERP object.
     """
-
+    logger.info('get search engine with {}'.format(search_engine))
     parser = get_parser_by_search_engine(search_engine)
     parser = parser(html=html, query=query)
     parser.parse(html)

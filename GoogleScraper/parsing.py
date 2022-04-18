@@ -335,7 +335,7 @@ it very easy to grab all data the site has to offer.
 """
 
 
-class GoogleParser(Parser):
+class GoogleParser(Parser):   
     """Parses SERP pages of the Google search engine."""
 
     search_engine = 'google'
@@ -1062,7 +1062,9 @@ def parse_serp(config, html=None, parser=None, scraper=None, search_engine=None,
 
     if not parser and html:
         parser = get_parser_by_search_engine(search_engine)
+        logger.info(search_engine)
         parser = parser(config, query=query)
+        logger.info(html)
         parser.parse(html)
 
     serp = SearchEngineResultsPage()

@@ -291,7 +291,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         out what went wrong.
         """
         tempdir = tempfile.gettempdir()
-        location = os.path.join(tempdir, '{}_{}_debug_screenshot.png'.format(self.search_engine_name, self.browser_type))
+        location = os.path.join(tempdir, '{}_{}_{}_debug_screenshot.png'.format(self.search_engine_name, self.browser_type,time.time()))
         logger.info(location)
         self.webdriver.get_screenshot_as_file(location)
 
@@ -526,9 +526,9 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         """
         next_url = ''
         element = self._find_next_page_element()
-
+        logger.info('find nex link element')
         if element and hasattr(element, 'click'):
-            next_url = element.get_attribute('href')
+            next_url = element.get_attribute('href')           
             try:
                 element.click()
             except WebDriverException:
@@ -673,7 +673,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         Clicks the next link while pages_per_keyword is not reached.
         """
         for self.query, self.pages_per_keyword in self.jobs.items():
-
+            logger.info('start to input {} in the search page'.format(self.query))
             self.search_input = self._wait_until_search_input_field_appears()
 
             if self.search_input is False and self.config.get('stop_on_detection'):
@@ -724,7 +724,8 @@ class SelScrape(SearchEngineScrape, threading.Thread):
             super().keyword_info()
 
             for self.page_number in self.pages_per_keyword:
-
+                logger.info('page per keyword is {}'.format(self.pages_per_keyword))
+                logger.info('waiting for the page {} to be load'.format(self.page_number))
                 self.wait_until_serp_loaded()
 
                 try:
