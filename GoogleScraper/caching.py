@@ -202,6 +202,7 @@ class CacheManager():
             be found a file based on the above params.
 
         """
+        logger.info("start to read cache")
         if self.config.get('do_caching', False):
             fname = self.cached_file_name(keyword, search_engine, scrapemode, page_number)
 
@@ -272,7 +273,7 @@ class CacheManager():
 
     def cache_results(self, parser, query, search_engine, scrape_mode, page_number, db_lock=None):
         """Stores the html of an parser in a file.
-
+        
         The file name is determined by the parameters query, search_engine, scrape_mode and page_number.
         See cached_file_name() for more information.
 
@@ -287,7 +288,7 @@ class CacheManager():
             page_number: The page number that the serp page is.
             db_lock: If an db_lock is given, all action are wrapped in this lock.
         """
-
+        logger.info("cache result")
         if self.config.get('do_caching', False):
             if db_lock:
                 db_lock.acquire()

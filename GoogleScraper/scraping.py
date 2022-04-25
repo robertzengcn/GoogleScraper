@@ -381,6 +381,7 @@ class SearchEngineScrape(metaclass=abc.ABCMeta):
 
 
     def after_search(self):
+        logger.info('start after search function')
         """Store the results and parse em.
 
         Notify the progress queue if necessary.
@@ -393,6 +394,7 @@ class SearchEngineScrape(metaclass=abc.ABCMeta):
 
         if self.progress_queue:
             self.progress_queue.put(1)
+        logger.info("cache result start")    
         self.cache_results()
 
     def before_search(self):

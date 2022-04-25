@@ -106,6 +106,7 @@ class Parser():
             self.parse()
 
     def parse(self, html=None):
+        
         """Public function to start parsing the search engine results.
         
         Args: 
@@ -429,6 +430,7 @@ class GoogleParser(Parser):
         super().__init__(*args, **kwargs)
 
     def after_parsing(self):
+        logger.info("new google after parsing method start")
         """Clean the urls.
         
         A typical scraped results looks like the following:

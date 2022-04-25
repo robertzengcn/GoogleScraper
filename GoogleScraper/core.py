@@ -380,7 +380,7 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
         scrape_jobs = cache_manager.parse_all_cached_files(scrape_jobs, session, scraper_search)
 
     if scrape_jobs:
-
+        logger.info(scrape_jobs)
         # Create a lock to synchronize database access in the sqlalchemy session
         db_lock = threading.Lock()
 

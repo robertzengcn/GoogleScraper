@@ -146,7 +146,7 @@ class Parser():
         # try to parse the number of results.
         attr_name = self.searchtype + '_search_selectors'
         selector_dict = getattr(self, attr_name, None)
-
+        logger.info(selector_dict)
         # get the appropriate css selectors for the num_results for the keyword
         num_results_selector = getattr(self, 'num_results_search_selectors', None)
 
@@ -177,7 +177,7 @@ class Parser():
             raise InvalidSearchTypeException('There is no such attribute: {}. No selectors found'.format(attr_name))
 
         for result_type, selector_class in selector_dict.items():
-
+            logger.info(result_type)
             self.search_results[result_type] = []
 
             for selector_specific, selectors in selector_class.items():
@@ -305,6 +305,7 @@ class Parser():
         for key, value in self.search_results.items():
             if isinstance(value, list):
                 for i, item in enumerate(value):
+                    # logger.info(item)
                     if isinstance(item, dict) and item['link']:
                         yield (key, i)
 
@@ -355,7 +356,8 @@ class GoogleParser(Parser):
             'us_ip': {
                 'container': '#center_col',
                 'result_container': 'div.g ',
-                'link': 'div.r > a:first-child::attr(href)',
+                # 'link': 'div.r > a:first-child::attr(href)',
+                'link': 'div.yuRUbf > a:first-child::attr(href)',
                 'snippet': 'div.s span.st::text',
                 'title': 'div.r > a > h3::text',
                 'visible_link': 'cite::text'
@@ -442,8 +444,9 @@ class GoogleParser(Parser):
         Clean with a short regex.
         """
         super().after_parsing()
-
-        if self.searchtype == 'normal':
+        logger.info("google parse here,search type is {}".format(self.searchtype)) 
+        if self.searchtype == 'normal':  
+            logger.info("start normal parsing")    
             if self.num_results > 0:
                 self.no_results = False
             elif self.num_results <= 0:
@@ -462,17 +465,21 @@ class GoogleParser(Parser):
 
         clean_regexes = {
             # 'normal': r'/url\?q=(?P<url>.*?)&sa=U&ei=',
-            'normal':r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+            # 'normal':r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+            'normal': r'/url?sa=t&source=web&rct=j&url=(?P<url>.*?)',
             'image': r'imgres\?imgurl=(?P<url>.*?)&'
         }
-
+        logger.info("after clean regexes defined")
+        logger.info(self.iter_serp_items())
         for key, i in self.iter_serp_items():
+            logger.info(key)
             logger.info("try to find link")
             logger.info(self.search_results[key][i]['link'])
             result = re.search(
                 clean_regexes[self.searchtype],
                 self.search_results[key][i]['link']
             )
+
             if result:
                 self.search_results[key][i]['link'] = unquote(result.group())
 

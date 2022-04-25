@@ -737,6 +737,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
 
                 # Click the next page link not when leaving the loop
                 # in the next iteration.
+                logger.info("start to click next page")
                 if self.page_number in self.pages_per_keyword:
                     next_url = self._goto_next_page()
                     self.requested_at = datetime.datetime.utcnow()
