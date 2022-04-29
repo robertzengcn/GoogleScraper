@@ -376,6 +376,7 @@ class CacheManager():
         num_cached = num_total = 0
         mapping = {}
         for job in scrape_jobs:
+            logger.info(job)
             cache_name = self.cached_file_name(
                 job['query'],
                 job['search_engine'],

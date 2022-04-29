@@ -162,10 +162,10 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
 
     if parse_cmd_line:
         cmd_line_args = get_command_line()
-
+        print(cmd_line_args)
         if cmd_line_args.get('config_file', None):
             external_config_file_path = os.path.abspath(cmd_line_args.get('config_file'))
-
+            logger.info("external config file is {}".format(external_config_file_path))
     config = get_config(cmd_line_args, external_config_file_path, config_from_dict)
 
     if isinstance(config['log_level'], int):
@@ -226,6 +226,7 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
 
     num_search_engines = len(search_engines)
     num_workers = int(config.get('num_workers'))
+    logger.info("the number of worker that we get is {}".format(num_workers))
     scrape_method = config.get('scrape_method')
     pages = int(config.get('num_pages_for_keyword', 1))
     method = config.get('scrape_method', 'http')
@@ -380,7 +381,7 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
         scrape_jobs = cache_manager.parse_all_cached_files(scrape_jobs, session, scraper_search)
 
     if scrape_jobs:
-        logger.info(scrape_jobs)
+        logger.info('the scrape job are {}'.format(scrape_jobs))
         # Create a lock to synchronize database access in the sqlalchemy session
         db_lock = threading.Lock()
 
@@ -411,8 +412,9 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
             for search_engine in search_engines:
 
                 for proxy in proxies:
-
+                    logger.info("the number of worker is {}".format(num_workers))
                     for worker in range(num_workers):
+                        logger.info("put {} worker into queue".format(worker))
                         num_worker += 1
                         workers.put(
                             ScrapeWorkerFactory(

@@ -359,7 +359,7 @@ class GoogleParser(Parser):
                 # 'link': 'div.r > a:first-child::attr(href)',
                 'link': 'div.yuRUbf > a:first-child::attr(href)',
                 'snippet': 'div.s span.st::text',
-                'title': 'div.r > a > h3::text',
+                'title': 'div.yuRUbf > a > h3::text',
                 'visible_link': 'cite::text'
             },
             'de_ip': {
@@ -472,7 +472,7 @@ class GoogleParser(Parser):
         logger.info("after clean regexes defined")
         logger.info(self.iter_serp_items())
         for key, i in self.iter_serp_items():
-            logger.info(key)
+            # logger.info(key)
             logger.info("try to find link")
             logger.info(self.search_results[key][i]['link'])
             result = re.search(

@@ -527,11 +527,16 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         next_url = ''
         element = self._find_next_page_element()
         logger.info('find nex link element')
+        logger.info(element)
         if element and hasattr(element, 'click'):
-            next_url = element.get_attribute('href')           
+            next_url = element.get_attribute('href') 
+            logger.info(next_url)          
             try:
                 element.click()
             except WebDriverException:
+                
+                logger.warn("click next link get exception")
+                logger.info("try to click it in another way")
                 # See http://stackoverflow.com/questions/11908249/debugging-element-is-not-clickable-at-point-error
                 # first move mouse to the next element, some times the element is not visibility, like blekko.com
                 selector = self.next_page_selectors[self.search_engine_name]
@@ -553,6 +558,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         if not next_url:
             return False
         else:
+            logger.info("return next link {}".format(next_url))
             return next_url
 
 
@@ -740,8 +746,9 @@ class SelScrape(SearchEngineScrape, threading.Thread):
                 logger.info("start to click next page")
                 if self.page_number in self.pages_per_keyword:
                     next_url = self._goto_next_page()
+                    logger.info("find the next link success {}".format(next_url))
                     self.requested_at = datetime.datetime.utcnow()
-
+                        
                     if not next_url:
                         break
 
