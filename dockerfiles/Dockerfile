@@ -13,9 +13,9 @@ WORKDIR /app/geckoDriver
 RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.22.0/geckodriver-v0.22.0-linux64.tar.gz
 RUN tar -zxvf geckodriver-v0.22.0-linux64.tar.gz
 
-
+RUN /usr/local/bin/python3 -m pip install --upgrade pip
 WORKDIR /app/GoogleScraper
-RUN pip install git+https://github.com/robertzengcn/GoogleScraper.git
+RUN python3 -m pip install git+https://github.com/robertzengcn/GoogleScraper.git
 RUN sed -i "/chromedriver_path =/c\chromedriver_path = '/app/chromeDriver/chromedriver'" /usr/local/lib/python3.6/site-packages/GoogleScraper/scrape_config.py 
 RUN sed -i "/geckodriver_path =/c\geckodriver_path = '/app/geckoDriver/geckodriver'" /usr/local/lib/python3.6/site-packages/GoogleScraper/scrape_config.py 
 RUN cd ./GoogleScraper&&pip install -r requirements.txt
