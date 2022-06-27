@@ -15,7 +15,7 @@ RUN tar -zxvf geckodriver-v0.22.0-linux64.tar.gz
 
 # RUN /usr/local/bin/python3 -m pip install --upgrade pip
 # RUN pip3 install pip -U
-RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
+#RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
 WORKDIR /app/GoogleScraper
 RUN pip3 install git+https://github.com/robertzengcn/GoogleScraper.git
 RUN sed -i "/chromedriver_path =/c\chromedriver_path = '/app/chromeDriver/chromedriver'" /usr/local/lib/python3.6/site-packages/GoogleScraper/scrape_config.py 

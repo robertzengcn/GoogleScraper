@@ -29,7 +29,7 @@ importlib-metadata
 # ipython==8.3.0
 ipython
 jedi==0.18.1
-Jinja2==3.1.1
+Jinja2
 lxml==4.8.0
 MarkupSafe==2.1.1
 matplotlib-inline==0.1.3
