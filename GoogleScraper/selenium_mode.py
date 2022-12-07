@@ -49,7 +49,9 @@ def check_detection(config, search_engine_name):
 
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
-    options.add_argument('window-size=1200x600')
+    options.add_argument('--start-maximized');
+    options.add_argument('--start-fullscreen');
+    # options.add_argument('window-size=1200x600')
 
     browser = webdriver.Chrome(chrome_options=options, executable_path=chromedriver)
 
@@ -572,6 +574,15 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         if self.search_type == 'normal':
             selector = self.next_page_selectors[self.search_engine_name]
             try:
+                # scroll to the end of page
+                lenOfPage = self.webdriver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
+                match=False
+                while(match==False):
+                    lastCount = lenOfPage
+                    time.sleep(1)
+                    lenOfPage = self.webdriver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
+                    if lastCount==lenOfPage:
+                        match=True
                 # wait until the next page link is clickable
                 WebDriverWait(self.webdriver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, selector)))
             except (WebDriverException, TimeoutException) as e:
