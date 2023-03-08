@@ -345,7 +345,7 @@ class GoogleParser(Parser):
 
     no_results_selector = []
 
-    num_results_search_selectors = ['#resultStats']
+    num_results_search_selectors = ['#result-stats']
 
     page_number_selectors = ['#navcnt td.cur::text']
 

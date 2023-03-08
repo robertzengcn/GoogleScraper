@@ -609,11 +609,13 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         """
 
         if self.search_type == 'normal':
+            anpageSelector=None
             #https://selenium-python.readthedocs.io/locating-elements.html#:~:text=Locating%20Elements%20by%20CSS%20Selectors%C2%B6
             if self.search_engine_name == 'google':
                 # selector = '#navcnt td.cur'
                 # selector='//*[@id="xjs"]/table/tbody/tr/td[@class="YyVfkd"]'
                   selector='#xjs td.YyVfkd'
+                  anpageSelector='#botstuff td.YyVfkd'
             elif self.search_engine_name == 'yandex':
                 selector = '.pager__item_current_yes'
             elif self.search_engine_name == 'bing':
@@ -636,15 +638,27 @@ class SelScrape(SearchEngineScrape, threading.Thread):
                     logger.info('the page number is {}'.format(self.page_number))
                     WebDriverWait(self.webdriver, 5).\
             until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, selector), str(self.page_number)))
+                
                 except TimeoutException as e:
-                    self._save_debug_screenshot()
-                    logger.warning('Pagenumber={} did not appear in serp. Maybe there is only one result for this query?'.format(self.page_number))
+                    if anpageSelector is not None:
+                       try:
+                            WebDriverWait(self.webdriver, 2).\
+            until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, anpageSelector), str(self.page_number))) 
+                       except TimeoutException as e:
+                            self._save_debug_screenshot()
+
+                            logger.warning('Another Pagenumber={} also not appear in serp. Maybe there is only one result for this query?'.format(self.page_number))       
+                    else:
+                        self._save_debug_screenshot()
+
+                        logger.warning('Pagenumber={} did not appear in serp. Maybe there is only one result for this query?'.format(self.page_number))
 
         elif self.search_type == 'image':
             self.wait_until_title_contains_keyword()
 
         else:
             self.wait_until_title_contains_keyword()
+
 
     def wait_until_title_contains_keyword(self):
         try:
