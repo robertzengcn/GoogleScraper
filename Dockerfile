@@ -19,7 +19,11 @@ RUN apt-get remove -y unzip
 # RUN pip3 install pip -U
 #RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
 WORKDIR /app/GoogleScraper
-RUN pip3 install git+https://github.com/robertzengcn/GoogleScraper.git
+COPY . .
+
+RUN pip3 install .
+# RUN pip3 install git+https://github.com/robertzengcn/GoogleScraper.git
+
 RUN sed -i "/chromedriver_path =/c\chromedriver_path = '/app/chromeDriver/chromedriver'" /usr/local/lib/python3.9/site-packages/GoogleScraper/scrape_config.py 
 # RUN sed -i "/geckodriver_path =/c\geckodriver_path = '/app/geckoDriver/geckodriver'" /usr/local/lib/python3.9/site-packages/GoogleScraper/scrape_config.py 
 

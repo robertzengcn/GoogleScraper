@@ -705,8 +705,9 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         """
         for self.query, self.pages_per_keyword in self.jobs.items():
             logger.info('start to input {} in the search page'.format(self.query))
+            
             self.search_input = self._wait_until_search_input_field_appears()
-
+               
             if self.search_input is False and self.config.get('stop_on_detection'):
                 self.status = 'Malicious request detected'
                 return

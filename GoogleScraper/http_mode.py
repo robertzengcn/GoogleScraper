@@ -216,6 +216,9 @@ class HttpScrape(SearchEngineScrape, threading.Timer):
             online = True
             status = 'Proxy is working.'
         else:
+            # proxy is working but we can't get the ip address
+            online = True
+
             logger.warning(status)
 
         super().update_proxy_status(status, ipinfo, online)
