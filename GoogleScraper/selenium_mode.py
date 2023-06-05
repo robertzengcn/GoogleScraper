@@ -340,12 +340,13 @@ class SelScrape(SearchEngineScrape, threading.Thread):
             chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument('--incognito')
             chrome_options.add_argument('--disable-application-cache')
-
+            # chrome_options.add_argument('window-size=1200x600') # optional
 
             if self.browser_mode == 'headless':
                 chrome_options.add_argument('headless')
                 #chrome_options.add_argument('window-size=1200x600') # optional
-
+            # else:
+            #     chrome_options.add_argument('window-size=1200x600') # optional 
             if self.proxy:
                 chrome_options.add_argument(
                     '--proxy-server={}://{}:{}'.format(self.proxy.proto, self.proxy.host, self.proxy.port))
@@ -705,9 +706,11 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         """
         for self.query, self.pages_per_keyword in self.jobs.items():
             logger.info('start to input {} in the search page'.format(self.query))
-            
-            self.search_input = self._wait_until_search_input_field_appears()
-               
+            inputWaittime=5
+            if(self.search_engine_name == 'bing'):
+                inputWaittime=6
+            self.search_input = self._wait_until_search_input_field_appears(inputWaittime)
+            logger.info('search input is {}'.format(self.search_input))
             if self.search_input is False and self.config.get('stop_on_detection'):
                 self.status = 'Malicious request detected'
                 return
@@ -720,9 +723,10 @@ class SelScrape(SearchEngineScrape, threading.Thread):
                 time.sleep(.25)
 
                 self.search_param_fields = self._get_search_param_fields()
-                logger.info(self.search_param_fields)
+                logger.info('get param is {}'.format(self.search_param_fields))
                 if self.search_param_fields:
                     wait_res = self._wait_until_search_param_fields_appears()
+                    logger.info('search param field appear {} '.format(wait_res))
                     if wait_res is False:
                         raise Exception('Waiting search param input fields time exceeds')
                     for param, field in self.search_param_fields.items():
@@ -732,17 +736,39 @@ class SelScrape(SearchEngineScrape, threading.Thread):
                             field.setAttribute("value", "%s");
                             '''
                         elif field[0] == By.NAME:
-                            js_tpl = '''
-                            var fields = document.getElementsByName("%s");
-                            for (var f in fields) {
+                            logger.info(self.search_engine_name)
+                            if(self.search_engine_name == 'bing'):
+                                js_tpl = '''
+                                document.getElementById('sb_form_q').innerHTML = "%s";
+                                '''
+                            else:    
+                                js_tpl = '''
+                                var fields = document.getElementsByName("%s");
+                                for (var f in fields) {
                                 f.setAttribute("value", "%s");
-                            }
-                            '''
+                                }
+                                '''
                         js_str = js_tpl % (field[1], self.search_param_values[param])
                         self.webdriver.execute_script(js_str)
+                else:
+                    logger.info('search param field not appear')
 
                 try:
-                    self.search_input.send_keys(self.query + Keys.ENTER)
+                    if(self.search_engine_name == 'bing'):
+                        # searchinputname=self.webdriver.find_element(By.NAME, "q")
+                        self.webdriver.implicitly_wait(5)
+                        self.search_input.click()
+                        self.search_input.clear()
+                        # self.search_input.send_keys(self.query + Keys.ENTER)
+                        js_tpl= '''
+                                document.getElementById('sb_form_q').innerHTML = "%s";
+                                '''
+                        js_str = js_tpl % (self.query)    
+                        self.webdriver.execute_script(js_str)
+                        self.webdriver.find_element(By.ID, "sb_form").submit()
+                        # self.search_input.send_keys(Keys.ENTER)
+                    else:    
+                        self.search_input.send_keys(self.query + Keys.ENTER)
                 except ElementNotVisibleException:
                     time.sleep(2)
                     self.search_input.send_keys(self.query + Keys.ENTER)
