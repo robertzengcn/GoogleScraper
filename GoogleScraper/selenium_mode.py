@@ -520,6 +520,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
             return False
 
     def _goto_next_page(self):
+        # self.webdriver.implicitly_wait(100)
         """
         Click the next page element,
 
@@ -556,7 +557,32 @@ class SelScrape(SearchEngineScrape, threading.Thread):
                         element.click()
                     except WebDriverException:
                         pass
-
+        else:
+        #for google next link may be read more, load page in another way
+            if self.search_engine_name == 'google':                
+                # for x in range(7):
+                #     self.webdriver.execute_script(
+                #         "window.scrollTo(0, document.body.scrollHeight);")
+                #     self.webdriver.implicitly_wait(5)
+                try:               
+                    gnextpage=self.webdriver.find_element(By.CLASS_NAME, "RVQdVd")
+                    # scroll to element and click
+                    self.webdriver.execute_script("arguments[0].scrollIntoView();", gnextpage)
+                    gnextpage.click()
+                except WebDriverException:
+                    logger.info("google read more button seem not exist, or it auto hidden")
+                    # check next button exist
+                    try:
+                        logger.info("check the next page button exist")
+                        nextButton = self.webdriver.find_element(By.CLASS_NAME, "G5eFlf")
+                        self.webdriver.execute_script("arguments[0].scrollIntoView();", nextButton)
+                        nextButton.click()
+                    except WebDriverException:
+                        logger.info("next page link also not exist")
+                        pass
+                    pass
+                next_url=str(self.webdriver.current_url)    
+                logger.info("google next url is {}".format(next_url))
         # wait until the next page was loaded
         if not next_url:
             return False

@@ -377,6 +377,15 @@ class GoogleParser(Parser):
                 'title': 'a._Dk::text',
                 'visible_link': 'cite::text'
             },
+            'us_ip_next_type': {
+                'container': '#main',
+                'result_container': 'div.Gx5Zad',
+                # 'link': 'div.r > a:first-child::attr(href)',
+                'link': 'div.egMi0 > a:first-child::attr(href)',
+                'snippet': 'div.s span.st::text',
+                'title': 'div.BNeawe::text',
+                'visible_link': 'div.sCuL3 > div'
+            },
         },
         'ads_main': {
             'us_ip': {
@@ -465,9 +474,10 @@ class GoogleParser(Parser):
 
         clean_regexes = {
             # 'normal': r'/url\?q=(?P<url>.*?)&sa=U&ei=',
-            # 'normal':r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
-            'normal': r'/url?sa=t&source=web&rct=j&url=(?P<url>.*?)',
-            'image': r'imgres\?imgurl=(?P<url>.*?)&'
+            'normal':r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+            # 'normal': r'/url\?sa=t&source=web&rct=j&url=(?P<url>.*?)',
+            'image': r'imgres\?imgurl=(?P<url>.*?)&',
+            # 'unique': r'/url\?esrc=s&q=&rct=j&sa=U&url=(?P<url>.*?)',
         }
         logger.info("after clean regexes defined")
         logger.info(self.iter_serp_items())
@@ -479,10 +489,21 @@ class GoogleParser(Parser):
                 clean_regexes[self.searchtype],
                 self.search_results[key][i]['link']
             )
-
+            logger.info('link result re is {}'.format(result))
             if result:
+                logger.info("get link result in normal way")
                 self.search_results[key][i]['link'] = unquote(result.group())
+            # else:
+            #     # try to use other way
+            #     logger.info("get link result in unique way")
+            #     uniqueresult = re.search(
+            #     clean_regexes['unique'],
+            #     self.search_results[key][i]['link']
+            #     )
+            #     if uniqueresult:
+            #        self.search_results[key][i]['link'] = unquote(uniqueresult.group())    
 
+             
 
 class YandexParser(Parser):
     """Parses SERP pages of the Yandex search engine."""
