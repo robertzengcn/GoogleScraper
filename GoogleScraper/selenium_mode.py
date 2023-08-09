@@ -152,7 +152,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         'googleimg': {
             'image_type': (By.ID, 'imgtype_input'),
             'image_size': (By.ID, 'imgsz_input'),
-        },
+        }
     }
 
     search_params = {
@@ -165,7 +165,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
     normal_search_locations = {
         'google': 'https://www.google.com/',
         'yandex': 'http://www.yandex.ru/',
-        'bing': 'http://www.bing.com/',
+        'bing': 'http://www.bing.com/search?q=test',
         'yahoo': 'https://yahoo.com/',
         'baidu': 'http://baidu.com/',
         'duckduckgo': 'https://duckduckgo.com/',
@@ -531,10 +531,10 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         next_url = ''
         element = self._find_next_page_element()
         logger.info('find nex link element')
-        logger.info(element)
+        # logger.info(element)
         if element and hasattr(element, 'click'):
             next_url = element.get_attribute('href') 
-            logger.info(next_url)          
+            # logger.info(next_url)          
             try:
                 element.click()
             except WebDriverException:
@@ -784,14 +784,14 @@ class SelScrape(SearchEngineScrape, threading.Thread):
                         # searchinputname=self.webdriver.find_element(By.NAME, "q")
                         self.webdriver.implicitly_wait(5)
                         self.search_input.click()
-                        self.search_input.clear()
-                        # self.search_input.send_keys(self.query + Keys.ENTER)
-                        js_tpl= '''
-                                document.getElementById('sb_form_q').innerHTML = "%s";
-                                '''
-                        js_str = js_tpl % (self.query)    
-                        self.webdriver.execute_script(js_str)
-                        self.webdriver.find_element(By.ID, "sb_form").submit()
+                        #self.search_input.clear()
+                        self.search_input.send_keys(self.query + Keys.ENTER)
+                        # js_tpl= '''
+                        #         document.getElementById('sb_form_q').innerHTML = "%s";
+                        #         '''
+                        # js_str = js_tpl % (self.query)    
+                        # self.webdriver.execute_script(js_str)
+                        # self.webdriver.find_element(By.ID, "sb_form").submit()
                         # self.search_input.send_keys(Keys.ENTER)
                     else:    
                         self.search_input.send_keys(self.query + Keys.ENTER)

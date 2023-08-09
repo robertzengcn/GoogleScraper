@@ -374,6 +374,14 @@ class GoogleParser(Parser):
                 'title': 'a._Dk::text',
                 'visible_link': 'cite::text'
             },
+            'cn_ip': {
+                'container': '#center_col',
+                'result_container': 'div.MjjYud',
+                'link': 'div.yuRUbf > a:first-child::attr(href)',
+                'snippet': 'div.VwiC3b span:first-child::text',
+                'title': 'h3.LC20lb::text',
+                'visible_link': 'cite::text'
+            },
         },
         'ads_main': {
             'us_ip': {

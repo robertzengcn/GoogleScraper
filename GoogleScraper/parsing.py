@@ -145,7 +145,9 @@ class Parser():
 
         # try to parse the number of results.
         attr_name = self.searchtype + '_search_selectors'
+        logger.info("get attr name")
         selector_dict = getattr(self, attr_name, None)
+        logger.info("selectot dict output")
         logger.info(selector_dict)
         # get the appropriate css selectors for the num_results for the keyword
         num_results_selector = getattr(self, 'num_results_search_selectors', None)
@@ -177,7 +179,7 @@ class Parser():
             raise InvalidSearchTypeException('There is no such attribute: {}. No selectors found'.format(attr_name))
 
         for result_type, selector_class in selector_dict.items():
-            logger.info(result_type)
+            logger.info("result type is "+result_type)
             self.search_results[result_type] = []
 
             for selector_specific, selectors in selector_class.items():
@@ -386,6 +388,14 @@ class GoogleParser(Parser):
                 'title': 'div.BNeawe::text',
                 'visible_link': 'div.sCuL3 > div'
             },
+             'cn_ip': {
+                'container': '#center_col',
+                'result_container': 'div.MjjYud',
+                'link': 'div.yuRUbf > div > a:first-child::attr(href)',
+                'snippet': 'div.VwiC3b span:first-child::text',
+                'title': 'h3.LC20lb::text',
+                'visible_link': 'cite::text'
+            },
         },
         'ads_main': {
             'us_ip': {
@@ -480,7 +490,8 @@ class GoogleParser(Parser):
             # 'unique': r'/url\?esrc=s&q=&rct=j&sa=U&url=(?P<url>.*?)',
         }
         logger.info("after clean regexes defined")
-        logger.info(self.iter_serp_items())
+        # logger.info(self.iter_serp_items())
+        logger.info(len(self.search_results))
         for key, i in self.iter_serp_items():
             # logger.info(key)
             logger.info("try to find link")

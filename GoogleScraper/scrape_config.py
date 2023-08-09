@@ -134,7 +134,7 @@ google_selenium_language = 'English'
 yandex_search_url = 'http://yandex.ru/yandsearch?'
 
 # The bing base search url
-bing_search_url = 'http://www.bing.com/search?'
+bing_search_url = 'http://www.bing.com/search?q=test'
 
 # The yahoo base search url
 yahoo_search_url = 'https://de.search.yahoo.com/search?'
