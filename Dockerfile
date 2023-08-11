@@ -9,11 +9,19 @@ WORKDIR /app/chromeDriver
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN apt-get update&&apt-get install -y ./google-chrome-stable_current_amd64.deb
 
-RUN apt-get install unzip
-RUN CHROMEVER=$(google-chrome --product-version | grep -o "[^\.]*\.[^\.]*\.[^\.]*") && \
-    DRIVERVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMEVER") && \
-    wget -q --continue "http://chromedriver.storage.googleapis.com/$DRIVERVER/chromedriver_linux64.zip" && \
-    unzip chromedriver_linux64.zip
+RUN apt-get install unzip jq -y
+
+RUN curl 'https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json' | jq .channels.Stable.downloads
+
+# RUN CHROMEVER=$(google-chrome --product-version | grep -o "[^\.]*\.[^\.]*\.[^\.]*") && \
+#     DRIVERVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMEVER") && \
+#     wget -q --continue "http://chromedriver.storage.googleapis.com/$DRIVERVER/chromedriver_linux64.zip" && \
+#     unzip chromedriver_linux64.zip
+RUN DRIVERVERURL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | jq .channels.Stable.downloads.chrome|jq '.[] | select(.platform=="linux64")'| jq .url|grep -o "[^\"]*")&& \
+    wget -O chrome-linux64.zip -q --continue $DRIVERVERURL&& \
+    unzip chrome-linux64.zip
+    
+
 RUN apt-get remove -y unzip    
 # RUN /usr/local/bin/python3 -m pip install --upgrade pip
 # RUN pip3 install pip -U
