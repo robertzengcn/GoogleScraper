@@ -17,9 +17,14 @@ RUN curl 'https://googlechromelabs.github.io/chrome-for-testing/last-known-good-
 #     DRIVERVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMEVER") && \
 #     wget -q --continue "http://chromedriver.storage.googleapis.com/$DRIVERVER/chromedriver_linux64.zip" && \
 #     unzip chromedriver_linux64.zip
-RUN DRIVERVERURL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | jq .channels.Stable.downloads.chrome|jq '.[] | select(.platform=="linux64")'| jq .url|grep -o "[^\"]*")&& \
-    wget -O chrome-linux64.zip -q --continue $DRIVERVERURL&& \
+#RUN DRIVERVERURL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | jq .channels.Stable.downloads.chrome|jq '.[] | select(.platform=="linux64")'| jq .url|grep -o "[^\"]*")&& \
+#    wget -O chrome-linux64.zip -q --continue $DRIVERVERURL&& \
+#    unzip chrome-linux64.zip
+RUN curl --silent "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" \
+  | jq --arg majorVersion "$CHROME_MAJOR_VERSION" -r '.channels.Stable | select(.version | startswith($majorVersion | tostring)).downloads.chromedriver[] | select(.platform == "linux64") | .url' \
+  | xargs curl -L --show-error --silent --output chrome-linux64.zip&& \
     unzip chrome-linux64.zip
+
     
 
 RUN apt-get remove -y unzip    
@@ -32,7 +37,7 @@ COPY . .
 RUN pip3 install .
 # RUN pip3 install git+https://github.com/robertzengcn/GoogleScraper.git
 
-RUN sed -i "/chromedriver_path =/c\chromedriver_path = '/app/chromeDriver/chromedriver'" /usr/local/lib/python3.9/site-packages/GoogleScraper/scrape_config.py 
+RUN sed -i "/chromedriver_path =/c\chromedriver_path = '/app/chromeDriver/chromedriver-linux64/chromedriver'" /usr/local/lib/python3.9/site-packages/GoogleScraper/scrape_config.py 
 # RUN sed -i "/geckodriver_path =/c\geckodriver_path = '/app/geckoDriver/geckodriver'" /usr/local/lib/python3.9/site-packages/GoogleScraper/scrape_config.py 
 
 RUN apt-get update && apt-get install -y openssh-server
