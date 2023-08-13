@@ -289,6 +289,8 @@ class CacheManager():
             db_lock: If an db_lock is given, all action are wrapped in this lock.
         """
         logger.info("cache result")
+        if parser == None:
+            return
         if self.config.get('do_caching', False):
             if db_lock:
                 db_lock.acquire()
