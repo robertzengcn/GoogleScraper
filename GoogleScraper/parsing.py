@@ -10,6 +10,8 @@ import pprint
 from GoogleScraper.database import SearchEngineResultsPage
 import logging
 from cssselect import HTMLTranslator
+from urllib.parse import urlparse
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -714,8 +716,28 @@ class BingParser(Parser):
                     if result:
                         self.search_results[key][i]['link'] = result.group('url')
                         break
-
-
+        logger.info(len(self.search_results))
+        for key, i in self.iter_serp_items():
+            # for bing sometimes the final link is not the real link
+            logger.info("try to find final link for bing")
+            logger.info(self.search_results[key][i]['link'])
+            urlDomain = urlparse(self.search_results[key][i]['link']).netloc 
+            if urlDomain=='www.bing.com':
+                try:
+                    r =requests.get(self.search_results[key][i]['link'],verify=False)
+                    if r.url!=None:
+                        self.search_results[key][i]['link']=r.url        
+                        logger.info('url is {}'.format(r.url))
+                except requests.exceptions.Timeout:
+                # Maybe set up for a retry, or continue in a retry loop
+                    pass
+                except requests.exceptions.TooManyRedirects:
+                # Tell the user their URL was bad and try a different one
+                    pass
+                except requests.exceptions.SSLError:
+                    pass
+                except requests.exceptions.RequestException:  
+                    pass                  
 class YahooParser(Parser):
     """Parses SERP pages of the Yahoo search engine."""
 
